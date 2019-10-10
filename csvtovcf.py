@@ -61,12 +61,18 @@ window_layout = [
 ]
 
 
+default_input = "CSV File.csv"
+default_output = "VCF Card.vcf"
+
 main_window = psg.Window('CSV to VCF Converter').Layout(window_layout)
 while True:
     btn, value = main_window.Read()
     print(btn, value)
     if btn in (None, 'Exit'):
         break
+    if default_input == value[0] or default_output == value[1]:
+        psg.Popup("Please select input source/ output destination ")
+        continue
     input_file = value[0]
     output_file = value[1]
     contacts = parse_csv(input_file, ',')
@@ -75,5 +81,6 @@ while True:
         output += build_vcard(c)
     with open(output_file, 'w') as outfile:
         outfile.write(output)
+    psg.Popup("Conversion successfully done", "%d contacts exported successfully" % (len(contacts)))
 
 print(value)
