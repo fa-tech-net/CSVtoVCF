@@ -1,6 +1,7 @@
-import PySimpleGUI as psg
+import PySimpleGUI as pSg
 import csv
 import codecs
+
 
 # compilation
 # pip install auto-py-to-exe
@@ -8,11 +9,11 @@ import codecs
 
 
 def build_vcard(contact: dict):
-    '''
+    """
     Apple VCard
     :param contact:
     :return:
-    '''
+    """
     begin = "BEGIN:VCARD\n"
     version = "VERSION:3.0\n"
     name = f"N:{contact['Last Name']};{contact['First Name']};;;\n"
@@ -30,8 +31,8 @@ def build_vcard(contact: dict):
                f"{contact['Home City']};{contact['Home Postal Code']};{contact['Home Country']}\n"
     end = "END:VCARD\n"
 
-    result = begin + version + name + title + org + phone +\
-             phone2 + phone3 + email + email2 + email3 + address + address2 + end
+    result = begin + version + name + title + org + phone + \
+        phone2 + phone3 + email + email2 + email3 + address + address2 + end
     return result
 
 
@@ -54,24 +55,23 @@ def parse_csv(filename, delimeter):
 
 
 window_layout = [
-        [psg.Text('Please select the csv file')],
-        [psg.Text('Choose CSV File :'), psg.InputText('CSV File.csv'), psg.FileBrowse(file_types=(("CSV", "*.csv"),))],
-        [psg.Text('Save VCF File as :'), psg.InputText('VCF Card.vcf'), psg.FileSaveAs(file_types=(("VCARD", ".vcf"),))],
-        [psg.Button("Convert"), psg.Exit()]
+    [pSg.Text('Please select the csv file')],
+    [pSg.Text('Choose CSV File :'), pSg.InputText('CSV File.csv'), pSg.FileBrowse(file_types=(("CSV", "*.csv"),))],
+    [pSg.Text('Save VCF File as :'), pSg.InputText('VCF Card.vcf'), pSg.FileSaveAs(file_types=(("VCARD", ".vcf"),))],
+    [pSg.Button("Convert"), pSg.Exit()]
 ]
-
 
 default_input = "CSV File.csv"
 default_output = "VCF Card.vcf"
 
-main_window = psg.Window('CSV to VCF Converter').Layout(window_layout)
+main_window = pSg.Window('CSV to VCF Converter').Layout(window_layout)
 while True:
     btn, value = main_window.Read()
     print(btn, value)
     if btn in (None, 'Exit'):
         break
     if default_input == value[0] or default_output == value[1]:
-        psg.Popup("Please select input source/ output destination ")
+        pSg.Popup("Please select input source/ output destination ")
         continue
     input_file = value[0]
     output_file = value[1]
@@ -81,6 +81,6 @@ while True:
         output += build_vcard(c)
     with open(output_file, 'w') as outfile:
         outfile.write(output)
-    psg.Popup("Conversion successfully done", "%d contacts exported successfully" % (len(contacts)))
+    pSg.Popup("Conversion successfully done", "%d contacts exported successfully" % (len(contacts)))
 
 print(value)
