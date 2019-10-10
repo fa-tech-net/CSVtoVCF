@@ -56,22 +56,24 @@ def parse_csv(filename, delimeter):
 
 window_layout = [
     [pSg.Text('Please select the csv file')],
-    [pSg.Text('Choose CSV File :'), pSg.InputText('CSV File.csv'), pSg.FileBrowse(file_types=(("CSV", "*.csv"),))],
-    [pSg.Text('Save VCF File as :'), pSg.InputText('VCF Card.vcf'), pSg.FileSaveAs(file_types=(("VCARD", ".vcf"),))],
+    [pSg.Text('Choose CSV File :'), pSg.InputText('Outlook CSV File.csv'), pSg.FileBrowse(file_types=(("CSV", "*.csv"),))],
+    [pSg.Text('')],
+    [pSg.Text('Please select VCard destination')],
+    [pSg.Text('Save VCF File as :'), pSg.InputText('Apple VCF Card.vcf'), pSg.FileSaveAs(file_types=(("VCARD", ".vcf"),))],
+    [pSg.Text('')],
     [pSg.Button("Convert"), pSg.Exit()]
 ]
 
-default_input = "CSV File.csv"
-default_output = "VCF Card.vcf"
+default_input = "Outlook CSV File.csv"
+default_output = "Apple VCF Card.vcf"
 
 main_window = pSg.Window('CSV to VCF Converter').Layout(window_layout)
 while True:
     btn, value = main_window.Read()
-    print(btn, value)
     if btn in (None, 'Exit'):
         break
     if default_input == value[0] or default_output == value[1]:
-        pSg.Popup("Please select input source/ output destination ")
+        pSg.Popup("Please select input source / output destination ", title="Error")
         continue
     input_file = value[0]
     output_file = value[1]
@@ -81,6 +83,6 @@ while True:
         output += build_vcard(c)
     with open(output_file, 'w') as outfile:
         outfile.write(output)
-    pSg.Popup("Conversion successfully done", "%d contacts exported successfully" % (len(contacts)))
+    pSg.Popup("Conversion successfully done", "%d contacts exported " % (len(contacts)))
 
 print(value)
