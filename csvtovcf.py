@@ -56,10 +56,12 @@ def parse_csv(filename, delimeter):
 
 window_layout = [
     [pSg.Text('Please select the csv file')],
-    [pSg.Text('Choose CSV File :'), pSg.InputText('Outlook CSV File.csv'), pSg.FileBrowse(file_types=(("CSV", "*.csv"),))],
+    [pSg.Text('Choose CSV File :'), pSg.InputText('Outlook CSV File.csv'), 
+     pSg.FileBrowse(file_types=(("CSV", "*.csv"),))],
     [pSg.Text('')],
     [pSg.Text('Please select VCard destination')],
-    [pSg.Text('Save VCF File as :'), pSg.InputText('Apple VCF Card.vcf'), pSg.FileSaveAs(file_types=(("VCARD", ".vcf"),))],
+    [pSg.Text('Save VCF File as :'), pSg.InputText('Apple VCF Card.vcf'), 
+     pSg.FileSaveAs(file_types=(("VCARD", ".vcf"),))],
     [pSg.Text('')],
     [pSg.Button("Convert"), pSg.Exit()]
 ]
@@ -78,11 +80,22 @@ while True:
     input_file = value[0]
     output_file = value[1]
     contacts = parse_csv(input_file, ',')
+    if not contacts:
+        pSg.popup("Invalid input file, no contact detected")
+        continue
     output = ""
+    invalid_rows = 0
     for c in contacts:
-        output += build_vcard(c)
+        try:
+            output += build_vcard(c)
+        except KeyError:
+            invalid_rows += 1
+    if invalid_rows == len(contacts):
+        pSg.popup("Invalid input file, no contact detected")
+        continue
     with open(output_file, 'w') as outfile:
         outfile.write(output)
-    pSg.Popup("Conversion successfully done", "%d contacts exported " % (len(contacts)))
-
-print(value)
+    message = "Conversion successfully done", "%d contacts exported " % (len(contacts))
+    if invalid_rows > 0:
+        message += "%d rows discarded"
+    pSg.Popup(message)
