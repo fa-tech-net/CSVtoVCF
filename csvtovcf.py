@@ -43,6 +43,7 @@ def parse_csv(filename, delimeter):
     :param delimeter:
     :return:
     """
+    rows = []
     try:
         with codecs.open(f"{filename}", "r", "utf-8-sig") as f:
             content = csv.reader(f, delimiter=delimeter)
@@ -50,8 +51,7 @@ def parse_csv(filename, delimeter):
             rows = [dict(zip(header, row)) for row in content]
             return rows
     except IOError as i:
-        print(i)
-        return []
+        return rows
 
 
 window_layout = [
